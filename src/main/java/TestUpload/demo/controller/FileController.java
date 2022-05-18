@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.List;
 
@@ -35,9 +36,21 @@ public class FileController {
 
 
     @GetMapping("/add")
-    public String add(){
-
+    public String add(HttpSession session, Model model){
+        model.addAttribute("id" , session.getAttribute("loginId"));
         return "add";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/add";
+    }
+
+    @GetMapping("/login")
+    public String login(HttpSession session){
+        session.setAttribute("loginId" , "sattyda");
+        return "redirect:/add";
     }
 
     @PostMapping("/submit")
@@ -64,6 +77,7 @@ public class FileController {
 
         FileUpload fileUpload = new FileUpload();
         fileUpload.setFilename(mylink);
+
 
         fileServ.save(fileUpload);
 
